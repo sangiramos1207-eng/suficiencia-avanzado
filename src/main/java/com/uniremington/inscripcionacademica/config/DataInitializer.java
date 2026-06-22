@@ -235,10 +235,73 @@ public class DataInitializer implements CommandLineRunner {
                 .prerrequisito(sistemasOperativos)
                 .build();
 
-        Asignatura asignaturaPrueba23 = asignaturaRepository.save(
+        Asignatura matematicasDiscretas = asignaturaRepository.save(
                 Asignatura.builder()
-                        .nombre("Asignatura de Prueba 23 Creditos")
-                        .numeroCreditos(23)
+                        .nombre("Matemáticas Discretas")
+                        .numeroCreditos(3)
+                        .semestreNivel(1)
+                        .departamento("Ingeniería")
+                        .planEstudio(planSistemas)
+                        .build()
+        );
+
+        Asignatura algebraLineal = asignaturaRepository.save(
+                Asignatura.builder()
+                        .nombre("Álgebra Lineal")
+                        .numeroCreditos(3)
+                        .semestreNivel(1)
+                        .departamento("Ingeniería")
+                        .planEstudio(planSistemas)
+                        .build()
+        );
+
+        Asignatura ingles1 = asignaturaRepository.save(
+                Asignatura.builder()
+                        .nombre("Inglés I")
+                        .numeroCreditos(2)
+                        .semestreNivel(1)
+                        .departamento("Idiomas")
+                        .planEstudio(planSistemas)
+                        .build()
+        );
+
+        Asignatura estadistica = asignaturaRepository.save(
+                Asignatura.builder()
+                        .nombre("Estadística")
+                        .numeroCreditos(3)
+                        .semestreNivel(2)
+                        .departamento("Matemáticas")
+                        .planEstudio(planSistemas)
+                        .build()
+        );
+
+        Asignatura arquitecturaComputadores = asignaturaRepository.save(
+                Asignatura.builder()
+                        .nombre("Arquitectura de Computadores")
+                        .numeroCreditos(3)
+                        .semestreNivel(2)
+                        .departamento("Ingeniería")
+                        .planEstudio(planSistemas)
+                        .build()
+        );
+
+        Asignatura desarrolloWeb = asignaturaRepository.save(
+                Asignatura.builder()
+                        .nombre("Desarrollo Web")
+                        .numeroCreditos(3)
+                        .semestreNivel(3)
+                        .departamento("Ingeniería")
+                        .planEstudio(planSistemas)
+                        .build()
+        );
+
+        Asignatura investigacionOperaciones = asignaturaRepository.save(
+                Asignatura.builder()
+                        .nombre("Investigación de Operaciones")
+                        .numeroCreditos(3)
+                        .semestreNivel(3)
+                        .departamento("Ingeniería")
+                        .planEstudio(planSistemas)
                         .build()
         );
 
@@ -347,15 +410,6 @@ public class DataInitializer implements CommandLineRunner {
                 .profesor(profesor5)
                 .build();
 
-        Curso cursoPrueba23 = cursoRepository.save(
-                Curso.builder()
-                        .asignatura(asignaturaPrueba23)
-                        .profesor(profesor1)
-                        .aula("LAB-999")
-                        .horario("Vie 18:00")
-                        .build()
-        );
-
         cursoRepository.save(curso1);
         cursoRepository.save(curso2);
         cursoRepository.save(curso3);
@@ -366,6 +420,83 @@ public class DataInitializer implements CommandLineRunner {
         cursoRepository.save(curso8);
         cursoRepository.save(curso9);
         cursoRepository.save(curso10);
+
+        cursoRepository.save(
+                Curso.builder()
+                        .aula("B-211")
+                        .cupoMaximo(30)
+                        .horario("LUN 18:00-20:00")
+                        .periodo("2026-1")
+                        .asignatura(matematicasDiscretas)
+                        .profesor(profesor1)
+                        .build()
+        );
+
+        cursoRepository.save(
+                Curso.builder()
+                        .aula("B-212")
+                        .cupoMaximo(30)
+                        .horario("MAR 18:00-20:00")
+                        .periodo("2026-1")
+                        .asignatura(algebraLineal)
+                        .profesor(profesor2)
+                        .build()
+        );
+
+        cursoRepository.save(
+                Curso.builder()
+                        .aula("B-213")
+                        .cupoMaximo(30)
+                        .horario("MIE 18:00-20:00")
+                        .periodo("2026-1")
+                        .asignatura(ingles1)
+                        .profesor(profesor3)
+                        .build()
+        );
+
+        cursoRepository.save(
+                Curso.builder()
+                        .aula("B-214")
+                        .cupoMaximo(30)
+                        .horario("JUE 18:00-20:00")
+                        .periodo("2026-1")
+                        .asignatura(estadistica)
+                        .profesor(profesor2)
+                        .build()
+        );
+
+        cursoRepository.save(
+                Curso.builder()
+                        .aula("B-215")
+                        .cupoMaximo(30)
+                        .horario("VIE 18:00-20:00")
+                        .periodo("2026-1")
+                        .asignatura(arquitecturaComputadores)
+                        .profesor(profesor1)
+                        .build()
+        );
+
+        cursoRepository.save(
+                Curso.builder()
+                        .aula("LAB-301")
+                        .cupoMaximo(25)
+                        .horario("SAB 08:00-10:00")
+                        .periodo("2026-1")
+                        .asignatura(desarrolloWeb)
+                        .profesor(profesor4)
+                        .build()
+        );
+
+        cursoRepository.save(
+                Curso.builder()
+                        .aula("LAB-302")
+                        .cupoMaximo(25)
+                        .horario("SAB 10:00-12:00")
+                        .periodo("2026-1")
+                        .asignatura(investigacionOperaciones)
+                        .profesor(profesor5)
+                        .build()
+        );
 
         // =====================================================
         // ESTUDIANTES
@@ -461,46 +592,6 @@ public class DataInitializer implements CommandLineRunner {
         estudianteRepository.save(estudiante8);
         estudianteRepository.save(estudiante9);
         estudianteRepository.save(estudiante10);
-
-        // =====================================================
-        // ASIGNATURAS CURSADAS
-        // =====================================================
-
-        AsignaturaCursada ac1 = AsignaturaCursada.builder()
-                .estudiante(estudiante6)
-                .asignatura(programacion1)
-                .notaFinal(4.5)
-                .build();
-
-        AsignaturaCursada ac2 = AsignaturaCursada.builder()
-                .estudiante(estudiante7)
-                .asignatura(programacion1)
-                .notaFinal(4.0)
-                .build();
-
-        AsignaturaCursada ac3 = AsignaturaCursada.builder()
-                .estudiante(estudiante7)
-                .asignatura(programacion2)
-                .notaFinal(4.2)
-                .build();
-
-        AsignaturaCursada ac4 = AsignaturaCursada.builder()
-                .estudiante(estudiante8)
-                .asignatura(programacion1)
-                .notaFinal(2.5)
-                .build();
-
-        AsignaturaCursada ac5 = AsignaturaCursada.builder()
-                .estudiante(estudiante9)
-                .asignatura(programacion1)
-                .notaFinal(3.8)
-                .build();
-
-        asignaturaCursadaRepository.save(ac1);
-        asignaturaCursadaRepository.save(ac2);
-        asignaturaCursadaRepository.save(ac3);
-        asignaturaCursadaRepository.save(ac4);
-        asignaturaCursadaRepository.save(ac5);
 
         // =====================================================
         // CURSOS MATRICULADOS
