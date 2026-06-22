@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.uniremington.inscripcionacademica.repository.ProgramaAcademicoRepository;
 
 import java.util.List;
 
@@ -25,13 +26,18 @@ public class EstudianteController {
     // Se usa para mostrar en la vista los cursos en los que está inscrito y calcular totales.
     private final CursoMatriculadoService cursoMatriculadoService;
 
+    private final ProgramaAcademicoRepository programaAcademicoRepository;
+
     // Constructor que inyecta los servicios necesarios.
     // Inyección de dependencias por constructor facilita el testing y la inmutabilidad del controlador.
     public EstudianteController(
-            EstudianteService estudianteService, CursoMatriculadoService cursoMatriculadoService
+            EstudianteService estudianteService,
+            CursoMatriculadoService cursoMatriculadoService,
+            ProgramaAcademicoRepository programaAcademicoRepository
     ) {
         this.estudianteService = estudianteService;
         this.cursoMatriculadoService = cursoMatriculadoService;
+        this.programaAcademicoRepository = programaAcademicoRepository;
     }
 
     // Muestra la lista de todos los estudiantes registrados.
@@ -60,6 +66,11 @@ public class EstudianteController {
         model.addAttribute(
                 "estudiante",
                 new Estudiante()
+        );
+
+        model.addAttribute(
+                "programas",
+                programaAcademicoRepository.findAll()
         );
 
         return "estudiante-form";
@@ -148,6 +159,11 @@ public class EstudianteController {
         model.addAttribute(
                 "estudiante",
                 estudiante
+        );
+
+        model.addAttribute(
+                "programas",
+                programaAcademicoRepository.findAll()
         );
 
         return "estudiante-form";
