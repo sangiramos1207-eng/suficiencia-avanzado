@@ -11,6 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.uniremington.inscripcionacademica.repository.ProgramaAcademicoRepository;
 
 import java.util.List;
+import com.uniremington.inscripcionacademica.entity.AsignaturaCursada;
+import com.uniremington.inscripcionacademica.repository.AsignaturaCursadaRepository;
 
 // Controlador que centraliza las operaciones HTTP relacionadas con la entidad Estudiante.
 // Expone endpoints para listar alumnos, mostrar formularios de creación/edición, guardar cambios y eliminar registros.
@@ -28,16 +30,20 @@ public class EstudianteController {
 
     private final ProgramaAcademicoRepository programaAcademicoRepository;
 
+    private final AsignaturaCursadaRepository asignaturaCursadaRepository;
+
     // Constructor que inyecta los servicios necesarios.
     // Inyección de dependencias por constructor facilita el testing y la inmutabilidad del controlador.
     public EstudianteController(
             EstudianteService estudianteService,
             CursoMatriculadoService cursoMatriculadoService,
-            ProgramaAcademicoRepository programaAcademicoRepository
+            ProgramaAcademicoRepository programaAcademicoRepository,
+            AsignaturaCursadaRepository asignaturaCursadaRepository
     ) {
         this.estudianteService = estudianteService;
         this.cursoMatriculadoService = cursoMatriculadoService;
         this.programaAcademicoRepository = programaAcademicoRepository;
+        this.asignaturaCursadaRepository = asignaturaCursadaRepository;
     }
 
     // Muestra la lista de todos los estudiantes registrados.
@@ -139,6 +145,32 @@ public class EstudianteController {
         model.addAttribute(
                 "totalCreditos",
                 totalCreditos
+        );
+
+        // Obtener asignaturas cursadas y calcular promedio
+        List<AsignaturaCursada> asignaturasCursadas =
+                asignaturaCursadaRepository.findByEstudiante(estudiante);
+
+        model.addAttribute(
+                "asignaturasCursadas",
+                asignaturasCursadas
+        );
+
+        double promedio = 0;
+        if (!asignaturasCursadas.isEmpty()) {
+
+            double suma = 0;
+
+            for (AsignaturaCursada a : asignaturasCursadas) {
+                suma += a.getNotaFinal();
+            }
+
+            promedio = suma / asignaturasCursadas.size();
+        }
+
+        model.addAttribute(
+                "promedio",
+                promedio
         );
 
         // Retorna la plantilla que muestra el detalle del estudiante y sus matrículas.
