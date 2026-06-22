@@ -3,64 +3,98 @@
 <head>
     <title>Matrícula</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        /* Estilos locales para mejorar presentación sin tocar CSS global */
+        .form-container { max-width: 1000px; margin: 24px auto; padding: 18px; font-family: Arial, Helvetica, sans-serif; }
+        h1 { margin-bottom: 12px; }
+        .grid { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; }
+        .card { background: #fff; border: 1px solid #e6e9ef; border-radius: 8px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        .student-card .title { font-weight: 700; margin-bottom: 8px; }
+        .info-row { margin: 6px 0; }
+        label { display:block; margin:8px 0 4px; font-weight:600; }
+        select, .btn { width:100%; }
+        select { padding:8px; border:1px solid #cbd5e1; border-radius:6px; }
+        .btn { padding:10px 12px; border-radius:6px; background:#2563eb; color:white; border:none; cursor:pointer; font-weight:600; }
+        .btn-secondary { background:#e2e8f0; color:#0f172a; text-decoration:none; display:inline-block; padding:10px 12px; border-radius:6px; }
+        .section-title { font-size:1.05rem; font-weight:700; margin-top:12px; }
+        ul.clean { list-style:none; padding-left:0; margin:8px 0; }
+        ul.clean li { padding:6px 8px; border-bottom:1px dashed #eef2f7; }
+        .muted { color:#475569; font-size:0.95rem; }
+        .small { font-size:0.9rem; }
+        .kpi { font-size:1.25rem; font-weight:700; }
+    </style>
 </head>
 <body>
 <div class="form-container">
 
-    <!-- Formulario para registrar la matrícula de un estudiante en un curso.
-         Variables esperadas en el modelo:
-         - estudiante: objeto Estudiante (nombre y apellidos mostrados)
-         - cursos: lista de Curso disponibles para seleccionar -->
-
     <h1>Registrar Matrícula</h1>
 
-    <!-- Mostrar nombre completo del estudiante para confirmar a quién se le está matriculando. -->
-    <p class="alert success" style="background-color: #f1f5f9; border-color: #e2e8f0; color: var(--text-main);">
-        Estudiante:
-        <strong
-                th:text="${estudiante.nombres + ' ' + estudiante.apellidos}">
-        </strong>
-    </p>
+    <div class="grid">
 
-    <!-- Formulario POST que envía estudianteId y cursoId al endpoint /matriculas/guardar -->
-    <form th:action="@{/matriculas/guardar}"
-          method="post">
+        <!-- Left column: formulario principal -->
+        <div class="card">
 
-        <!-- Campo oculto con el id del estudiante para relacionar la matrícula en el servidor. -->
-        <input
-                type="hidden"
-                name="estudianteId"
-                th:value="${estudiante.id}">
+            <p class="muted">Estudiante:
+                <strong th:text="${estudiante.nombres + ' ' + estudiante.apellidos}"></strong>
+            </p>
 
-        <!-- Selector de cursos disponibles. El valor enviado es el id del curso. -->
-        <label>Curso</label>
+            <form th:action="@{/matriculas/guardar}" method="post">
+                <input type="hidden" name="estudianteId" th:value="${estudiante.id}">
 
-        <select name="cursoId" required>
+                <label for="cursoId">Seleccionar Curso</label>
+                <select id="cursoId" name="cursoId" required>
+                    <option th:each="curso : ${cursos}" th:value="${curso.id}"
+                            th:text="${curso.asignatura.nombre + ' - ' + curso.periodo}"></option>
+                </select>
 
-            <!-- Se recorre la colección 'cursos' y se crea una opción por cada curso.
-                 El texto muestra la asignatura y el periodo para que el usuario identifique el curso. -->
-            <option
-                    th:each="curso : ${cursos}"
-                    th:value="${curso.id}"
-                    th:text="${curso.asignatura.nombre + ' - ' + curso.periodo}">
-            </option>
+                <div style="display:flex; gap:10px; margin-top:14px;">
+                    <button type="submit" class="btn">Matricular</button>
+                    <a th:href="@{/estudiantes}" class="btn-secondary" style="align-self:center;">Regresar</a>
+                </div>
 
-        </select>
+                <div class="section-title">Notas</div>
+                <p class="small muted">Antes de matricular, verifica prerrequisitos y el límite de créditos mostrado a la derecha.</p>
+            </form>
 
-        <br>
+        </div>
 
-        <!-- Botón que envía el formulario para procesar la matrícula. -->
-        <button type="submit" class="btn btn-primary">
-            Matricular
-        </button>
+        <!-- Right column: tarjeta académica con información y listados -->
+        <aside class="card student-card">
 
-    </form>
+            <div class="title">Información Académica</div>
 
-    <!-- Enlace para regresar a la lista de estudiantes (mantener navegación consistente) -->
-    <div class="actions-footer">
-        <a class="btn btn-secondary" th:href="@{/estudiantes}">
-            Regresar
-        </a>
+            <div class="info-row"><span class="muted">Programa:</span>
+                <div><strong th:text="${estudiante.programaAcademico.nombrePrograma}"></strong></div>
+            </div>
+
+            <div class="info-row"><span class="muted">Semestre:</span>
+                <div><strong th:text="${estudiante.semestreActual}"></strong></div>
+            </div>
+
+            <div class="info-row"><span class="muted">Créditos Matriculados:</span>
+                <div class="kpi" th:text="${creditosActuales} + ' / 22'"></div>
+            </div>
+
+            <div class="section-title">Asignaturas Aprobadas</div>
+            <ul class="clean">
+                <li th:each="asignatura : ${asignaturasCursadas}">
+                    <div><strong th:text="${asignatura.asignatura.nombre}"></strong></div>
+                    <div class="small muted">Nota: <strong th:text="${asignatura.notaFinal}"></strong></div>
+                </li>
+                <li th:if="${#lists.isEmpty(asignaturasCursadas)}" class="small muted">No hay asignaturas aprobadas registradas.</li>
+            </ul>
+
+            <div class="section-title">Cursos Matriculados Actualmente</div>
+            <ul class="clean">
+                <li th:each="matricula : ${matriculasActuales}">
+                    <div><strong th:text="${matricula.curso.asignatura.nombre}"></strong></div>
+                    <div class="small muted">(<span th:text="${matricula.curso.asignatura.numeroCreditos}"></span> créditos)</div>
+                </li>
+                <li th:if="${#lists.isEmpty(matriculasActuales)}" class="small muted">No hay cursos matriculados en el periodo seleccionado.</li>
+            </ul>
+
+        </aside>
+
     </div>
 
 </div>
