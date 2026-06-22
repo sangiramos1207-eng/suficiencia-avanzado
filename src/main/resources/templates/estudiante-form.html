@@ -40,6 +40,22 @@
         <label>Semestre</label>
         <input type="number" th:field="*{semestreActual}" required>
 
+        <label>Programa Académico</label>
+
+        <select th:field="*{programaAcademico.id}" required>
+
+            <option value="">
+                Seleccione un programa
+            </option>
+
+            <option
+                    th:each="programa : ${programas}"
+                    th:value="${programa.id}"
+                    th:text="${programa.nombrePrograma}">
+            </option>
+
+        </select>
+
         <br>
 
         <!-- Botón para enviar el formulario y guardar el estudiante -->
