@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Carga de Archivos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="form-container">
+
+    <!-- Plantilla simple para subir archivos -->
+    <h1>Carga de Archivos</h1>
+
+    <!--
+      Formulario multipart necesario para enviar archivos.
+      th:action apunta al endpoint /archivos/subir definido en ArchivoController.
+    -->
+    <form
+            method="post"
+            enctype="multipart/form-data"
+            th:action="@{/archivos/subir}">
+
+        <!-- Campo para seleccionar un archivo desde el equipo -->
+        <input
+                type="file"
+                name="archivo"
+                required>
+
+        <br>
+
+        <!-- Botón para enviar el formulario -->
+        <button type="submit" class="btn btn-primary">
+            Subir Archivo
+        </button>
+
+    </form>
+
+    <!--
+      Mostrar mensaje de resultado (éxito o error) si el model contiene 'mensaje'.
+      th:if evita renderizar el párrafo cuando no hay mensaje.
+    -->
+    <p
+            th:if="${mensaje}"
+            th:text="${mensaje}"
+            class="alert success"
+            style="margin-top: 20px;">
+    </p>
+
+    <!-- Lista de archivos cargados -->
+    <div class="card mt-4"
+         th:if="${archivos != null}">
+        <div class="card-header">
+            <h3>Archivos cargados</h3>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-striped">
+
+                <thead>
+                <tr>
+                    <th>Archivo</th>
+                    <th>Acción</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="archivo : ${archivos}">
+                    <td th:text="${archivo}"></td>
+
+                    <td>
+
+                        <a class="btn btn-primary btn-sm"
+                           th:href="@{'/uploads/' + ${archivo}}"
+                           target="_blank">
+                            Ver
+                        </a>
+
+                        <a class="btn btn-danger btn-sm"
+                           th:href="@{'/archivos/eliminar/' + ${archivo}}"
+                           onclick="return confirm('¿Eliminar archivo?');">
+                            Eliminar
+                        </a>
+
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+    <!-- Enlace para regresar a la lista de estudiantes (consistente con otras plantillas) -->
+    <div class="actions-footer">
+        <a class="btn btn-secondary" th:href="@{/estudiantes}">
+            Regresar
+        </a>
+    </div>
+
+</div>
+</body>
+</html>

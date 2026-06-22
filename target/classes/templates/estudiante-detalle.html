@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Consulta de Estudiante</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="app-container">
+
+    <h1>Consulta de Estudiante</h1>
+
+    <!-- Se muestra información básica del estudiante para confirmar el registro consultado. -->
+    <div class="student-info-grid">
+        <div class="student-info-card">
+            <strong>Estudiante:</strong>
+            <!-- Nombre completo construido desde el objeto estudiante en el modelo. -->
+            <span th:text="${estudiante.nombres + ' ' + estudiante.apellidos}">
+            </span>
+        </div>
+
+        <div class="student-info-card">
+            <strong>Programa Académico:</strong>
+            <span th:text="${estudiante.programaAcademico.nombrePrograma}">
+            </span>
+        </div>
+
+        <div class="student-info-card">
+            <strong>Semestre Actual:</strong>
+            <!-- Semestre actual del estudiante (valor entero). -->
+            <span th:text="${estudiante.semestreActual}">
+            </span>
+        </div>
+    </div>
+
+    <h2>Cursos Matriculados</h2>
+
+    <table border="0">
+
+        <tr>
+            <!-- Cabeceras que describen la información mostrada por fila de matrícula. -->
+            <th>Curso</th>
+            <th>Profesor</th>
+            <th>Aula</th>
+            <th>Horario</th>
+            <!-- Columna de acción: permite eliminar la matrícula. -->
+            <th>Acción</th>
+        </tr>
+
+        <tr th:each="matricula : ${matriculas}">
+
+            <td th:text="${matricula.curso.asignatura.nombre}">
+            </td>
+
+            <td
+                    th:text="${matricula.curso.profesor.nombres + ' ' + matricula.curso.profesor.apellidos}">
+            </td>
+
+            <td th:text="${matricula.curso.aula}">
+            </td>
+
+            <td th:text="${matricula.curso.horario}">
+            </td>
+
+            <td>
+                <div class="action-links">
+                    <!-- Enlace para eliminar la matrícula. Usa el id de CursoMatriculado y redirige al detalle del estudiante al volver. -->
+                    <a
+                            th:href="@{/matriculas/eliminar/{id}(id=${matricula.id})}"
+                            class="action-eliminar"
+                            style="font-weight:bold;">
+                        X
+                    </a>
+                </div>
+            </td>
+
+        </tr>
+
+    </table>
+
+    <!-- Mostrar el total de créditos que el estudiante está cursando actualmente. -->
+    <div class="total-credits-banner">
+        <strong>Total créditos:</strong>
+        <span th:text="${totalCreditos}">
+        </span>
+    </div>
+
+    <div class="actions-footer">
+        <a class="btn btn-secondary" th:href="@{/estudiantes}">
+            Regresar
+        </a>
+        <a class="btn btn-primary"
+                th:href="@{/reportes/estudiante/{id}/pdf(id=${estudiante.id})}">
+            Descargar PDF
+        </a>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Matrícula</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="form-container">
+
+    <!-- Formulario para registrar la matrícula de un estudiante en un curso.
+         Variables esperadas en el modelo:
+         - estudiante: objeto Estudiante (nombre y apellidos mostrados)
+         - cursos: lista de Curso disponibles para seleccionar -->
+
+    <h1>Registrar Matrícula</h1>
+
+    <!-- Mostrar nombre completo del estudiante para confirmar a quién se le está matriculando. -->
+    <p class="alert success" style="background-color: #f1f5f9; border-color: #e2e8f0; color: var(--text-main);">
+        Estudiante:
+        <strong
+                th:text="${estudiante.nombres + ' ' + estudiante.apellidos}">
+        </strong>
+    </p>
+
+    <!-- Formulario POST que envía estudianteId y cursoId al endpoint /matriculas/guardar -->
+    <form th:action="@{/matriculas/guardar}"
+          method="post">
+
+        <!-- Campo oculto con el id del estudiante para relacionar la matrícula en el servidor. -->
+        <input
+                type="hidden"
+                name="estudianteId"
+                th:value="${estudiante.id}">
+
+        <!-- Selector de cursos disponibles. El valor enviado es el id del curso. -->
+        <label>Curso</label>
+
+        <select name="cursoId" required>
+
+            <!-- Se recorre la colección 'cursos' y se crea una opción por cada curso.
+                 El texto muestra la asignatura y el periodo para que el usuario identifique el curso. -->
+            <option
+                    th:each="curso : ${cursos}"
+                    th:value="${curso.id}"
+                    th:text="${curso.asignatura.nombre + ' - ' + curso.periodo}">
+            </option>
+
+        </select>
+
+        <br>
+
+        <!-- Botón que envía el formulario para procesar la matrícula. -->
+        <button type="submit" class="btn btn-primary">
+            Matricular
+        </button>
+
+    </form>
+
+    <!-- Enlace para regresar a la lista de estudiantes (mantener navegación consistente) -->
+    <div class="actions-footer">
+        <a class="btn btn-secondary" th:href="@{/estudiantes}">
+            Regresar
+        </a>
+    </div>
+
+</div>
+</body>
+</html>

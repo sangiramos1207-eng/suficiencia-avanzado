@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nuevo Estudiante</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="form-container">
+
+    <!-- Título de la página: indica que es el formulario para crear/editar estudiantes -->
+    <h1>Nuevo Estudiante</h1>
+
+    <!-- Formulario principal:
+         - th:action apunta al endpoint que guardará el estudiante (/estudiantes/guardar)
+         - th:object vincula el formulario con el objeto 'estudiante' del modelo
+         - method="post" envía los datos como POST -->
+    <form th:action="@{/estudiantes/guardar}"
+          th:object="${estudiante}"
+          method="post">
+
+        <input type="hidden" th:field="*{id}">
+
+        <!-- Campo: Identificación (ej. cédula o DNI)
+             th:field="*{identificacion}" enlaza con estudiante.identificacion -->
+        <label>Identificación</label>
+        <input type="text" th:field="*{identificacion}" required>
+
+        <!-- Campo: Nombres del estudiante
+             th:field="*{nombres}" enlaza con estudiante.nombres -->
+        <label>Nombres</label>
+        <input type="text" th:field="*{nombres}" required>
+
+        <!-- Campo: Apellidos del estudiante
+             th:field="*{apellidos}" enlaza con estudiante.apellidos -->
+        <label>Apellidos</label>
+        <input type="text" th:field="*{apellidos}" required>
+
+        <!-- Campo: Semestre actual (número)
+             th:field="*{semestreActual}" enlaza con estudiante.semestreActual -->
+        <label>Semestre</label>
+        <input type="number" th:field="*{semestreActual}" required>
+
+        <br>
+
+        <!-- Botón para enviar el formulario y guardar el estudiante -->
+        <button type="submit" class="btn btn-primary">
+            Guardar
+        </button>
+
+    </form>
+
+    <!-- Enlace para volver a la lista de estudiantes (navegación simple) -->
+    <div class="actions-footer">
+        <a class="btn btn-secondary" th:href="@{/estudiantes}">
+            Regresar
+        </a>
+    </div>
+
+</div>
+</body>
+</html>

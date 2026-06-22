@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Estudiantes</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="app-container">
+
+    <!-- Plantilla que muestra la lista de estudiantes.
+         Variables esperadas en el modelo:
+         - estudiantes: lista de objetos Estudiante para iterar en la tabla
+         - error: código de error (opcional) para mostrar mensajes específicos
+         - success: código de éxito (opcional) -->
+
+    <div class="dashboard-header">
+        <h1>Listado de Estudiantes</h1>
+        <!-- Formulario de logout en la esquina superior derecha.
+             Envía POST a /logout y Spring Security cierra la sesión. -->
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger">
+                Cerrar sesión
+            </button>
+        </form>
+    </div>
+<div th:if="${mensaje}"
+     style="color: green;
+            font-weight: bold;
+            margin-bottom: 15px;">
+    <span th:text="${mensaje}"></span>
+</div>
+
+    <div class="action-bar">
+        <!-- Enlaces rápidos: crear nuevo estudiante, exportar lista y cargar archivos -->
+        <a class="btn btn-primary" th:href="@{/estudiantes/nuevo}">
+            Nuevo Estudiante
+        </a>
+
+        <span class="divider">|</span>
+        <!-- Exporta la lista de estudiantes a un archivo Excel -->
+        <a class="btn btn-secondary" th:href="@{/reportes/estudiantes/excel}">
+            Exportar Excel
+        </a>
+
+        <span class="divider">|</span>
+        <!-- Navega a la página para subir/cargar archivos (e.g., CSV) -->
+        <a class="btn btn-secondary" th:href="@{/archivos}">
+            Cargar Archivos
+        </a>
+    </div>
+
+<!-- Mensaje de error: el estudiante ya aprobó la asignatura y no puede inscribirse nuevamente. -->
+<p
+        th:if="${error == 'asignatura-cursada'}"
+        style="color:red;">
+    El estudiante ya cursó esta asignatura.
+</p>
+
+<!-- Mensaje de error: el estudiante ya se encuentra inscrito en el mismo curso (evita duplicados). -->
+<p
+        th:if="${error == 'curso-duplicado'}"
+        style="color:red;">
+    El estudiante ya está matriculado en este curso.
+</p>
+
+<!-- Mensaje de éxito: se muestra cuando la matrícula se ha registrado correctamente. -->
+<p
+        th:if="${success == 'matricula-ok'}"
+        style="color:green;">
+    Matrícula registrada correctamente.
+</p>
+
+<!-- Mensaje de error: se muestra cuando falta un prerrequisito obligatorio para el curso seleccionado. -->
+<p
+        th:if="${error == 'prerrequisito'}"
+        style="color:red;">
+    El estudiante no cumple el prerrequisito requerido.
+</p>
+
+<!-- Mensaje de error: indica que con la nueva inscripción el estudiante excedería el límite de créditos por periodo (22). -->
+<p
+        th:if="${error == 'max-creditos'}"
+        style="color:red;">
+    El estudiante supera el máximo permitido de 22 créditos.
+</p>
+
+<!-- Tabla que lista los estudiantes registrados. Cada columna muestra un campo clave del objeto Estudiante.
+     Las cabeceras siguientes ayudan a entender el contenido de cada columna en la fila. -->
+<table border="0">
+
+    <tr>
+        <th>ID</th>
+        <th>Identificación</th>
+        <th>Apellidos</th>
+        <th>Nombres</th>
+        <th>Semestre</th>
+        <th>Acciones</th>
+    </tr>
+
+    <!-- Por cada estudiante en la lista se genera una fila con sus datos básicos. -->
+    <tr th:each="estudiante : ${estudiantes}">
+        <!-- Identificador interno (id) mostrado como enlace a la vista de detalle del estudiante. -->
+        <td>
+            <!-- Al hacer clic en el id se navega al detalle del estudiante para ver sus matrículas. -->
+            <a
+                    th:href="@{/estudiantes/detalle/{id}(id=${estudiante.id})}"
+                    th:text="${estudiante.id}">
+            </a>
+        </td>
+        <!-- Número de identificación del alumno (cédula, DNI, etc.). -->
+        <td th:text="${estudiante.identificacion}"></td>
+        <!-- Apellidos del estudiante. -->
+        <td th:text="${estudiante.apellidos}"></td>
+        <!-- Nombres del estudiante. -->
+        <td th:text="${estudiante.nombres}"></td>
+        <!-- Semestre actual del estudiante (entero). -->
+        <td th:text="${estudiante.semestreActual}"></td>
+
+        <td>
+            <div class="action-links">
+                <!-- Enlace para iniciar el proceso de matrícula para este estudiante. -->
+                <a class="action-matricular" th:href="@{/matriculas/nueva/{id}(id=${estudiante.id})}">
+                    Matricular
+                </a>
+                <span class="divider">|</span>
+                <!-- Enlace para editar la información del estudiante. -->
+                <a class="action-modificar" th:href="@{/estudiantes/editar/{id}(id=${estudiante.id})}">
+                    Modificar
+                </a>
+                <span class="divider">|</span>
+                <!-- Enlace que elimina el registro del estudiante (por simplicidad usa GET). -->
+                <a class="action-eliminar" th:href="@{/estudiantes/eliminar/{id}(id=${estudiante.id})}">
+                    Eliminar
+                </a>
+            </div>
+        </td>
+    </tr>
+
+</table>
+
+</div>
+</body>
+</html>

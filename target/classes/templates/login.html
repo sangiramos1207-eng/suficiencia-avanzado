@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Página de login: formulario sencillo usado por Spring Security -->
+    <title>Sistema de Matrícula Académica</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page-body">
+
+<div class="login-card">
+
+    <!-- Título del sistema -->
+    <h2>Sistema de Matrícula Académica</h2>
+
+    <!-- Mensaje de error: mostrado si el parámetro 'error' está presente -->
+    <div
+            th:if="${param.error}"
+            class="error">
+
+        Usuario o contraseña incorrectos
+
+    </div>
+
+    <!-- Mensaje de confirmación de logout: aparece si 'logout' está en parámetros -->
+    <div
+            th:if="${param.logout}"
+            class="logout">
+
+        Sesión cerrada correctamente
+
+    </div>
+
+    <!-- Formulario: envía POST a /login para que Spring Security lo procese -->
+    <form
+            th:action="@{/login}"
+            method="post">
+
+        <!-- Campo de usuario (username) -->
+        <input
+                type="text"
+                name="username"
+                placeholder="Usuario"
+                required>
+
+        <!-- Campo de contraseña (password) -->
+        <input
+                type="password"
+                name="password"
+                placeholder="Contraseña"
+                required>
+
+        <!-- Botón para enviar el formulario -->
+        <button type="submit">
+
+            Iniciar Sesión
+
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>
