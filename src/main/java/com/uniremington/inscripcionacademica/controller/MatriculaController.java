@@ -4,6 +4,7 @@ import com.uniremington.inscripcionacademica.entity.Asignatura;
 import com.uniremington.inscripcionacademica.entity.Curso;
 import com.uniremington.inscripcionacademica.entity.CursoMatriculado;
 import com.uniremington.inscripcionacademica.entity.Estudiante;
+import com.uniremington.inscripcionacademica.entity.AsignaturaCursada;
 import com.uniremington.inscripcionacademica.repository.CursoRepository;
 import com.uniremington.inscripcionacademica.repository.EstudianteRepository;
 import com.uniremington.inscripcionacademica.repository.AsignaturaCursadaRepository;
@@ -68,6 +69,45 @@ public class MatriculaController {
         // Añade al modelo el estudiante y la lista completa de cursos para el select del formulario.
         model.addAttribute("estudiante", estudiante);
         model.addAttribute("cursos", cursoRepository.findAll());
+
+        // Obtener asignaturas cursadas por el estudiante (materias aprobadas)
+        List<AsignaturaCursada> asignaturasCursadas =
+                asignaturaCursadaRepository
+                        .findByEstudiante(estudiante);
+
+        // Obtener matrículas actuales del periodo específico (ejemplo 2026-1)
+        List<CursoMatriculado> matriculasActuales =
+                cursoMatriculadoRepository
+                        .findByEstudianteAndPeriodo(
+                                estudiante,
+                                "2026-1"
+                        );
+
+        int creditosActuales = 0;
+
+        for (CursoMatriculado matricula : matriculasActuales) {
+
+            creditosActuales +=
+                    matricula.getCurso()
+                            .getAsignatura()
+                            .getNumeroCreditos();
+        }
+
+        // Enviar datos académicos al modelo para la vista
+        model.addAttribute(
+                "asignaturasCursadas",
+                asignaturasCursadas
+        );
+
+        model.addAttribute(
+                "matriculasActuales",
+                matriculasActuales
+        );
+
+        model.addAttribute(
+                "creditosActuales",
+                creditosActuales
+        );
 
         // Retorna el nombre de la plantilla Thymeleaf que muestra el formulario.
         return "matricula-form";
