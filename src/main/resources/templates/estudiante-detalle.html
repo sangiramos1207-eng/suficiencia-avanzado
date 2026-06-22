@@ -84,6 +84,27 @@
         </span>
     </div>
 
+    <h2>Asignaturas Cursadas</h2>
+
+    <table>
+
+        <tr>
+            <th>Asignatura</th>
+            <th>Nota Final</th>
+        </tr>
+
+        <tr th:each="asignatura : ${asignaturasCursadas}">
+            <td th:text="${asignatura.asignatura.nombre}"></td>
+            <td th:text="${asignatura.notaFinal}"></td>
+        </tr>
+
+    </table>
+
+    <div class="total-credits-banner">
+        <strong>Promedio acumulado:</strong>
+        <span th:text="${#numbers.formatDecimal(promedio,1,2)}"></span>
+    </div>
+
     <div class="actions-footer">
         <a class="btn btn-secondary" th:href="@{/estudiantes}">
             Regresar
