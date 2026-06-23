@@ -9,6 +9,7 @@ package com.uniremington.inscripcionacademica.controller.api;
 import com.uniremington.inscripcionacademica.entity.Profesor;
 import com.uniremington.inscripcionacademica.repository.ProfesorRepository;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/profesores")
@@ -36,5 +37,11 @@ public class ProfesorRestController {
         return profesorRepository
                 .findById(id)
                 .orElseThrow();
+    }
+
+    @GetMapping
+    public List<Profesor> listarProfesores() {
+
+        return profesorRepository.findAll();
     }
 }
